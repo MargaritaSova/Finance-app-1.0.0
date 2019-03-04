@@ -13,8 +13,6 @@ let balance = document.getElementById('balance');
 let deleteBtn = document.querySelector('.delete');
 
 
-// comments = [];
-
 income.addEventListener('change', onIncomeClick);
 consumption.addEventListener('change', onConsumptionClick);
 add.addEventListener('click', onAddClick);
@@ -64,20 +62,8 @@ function onConsumptionClick() {
         income.checked = false;
     }
 }
-/////////////////////////////////////////////////////////////////////////////////
-// function onAddClick() {
-
-//     let comment = {
-//         text: number1Input.value,
-//         date: dateEl.value
-//     }
-//     comments.push(comment);
-//     showComments();
-// }
-
-
-comments = [];
 ////////////////////////////////////////////////////////////////////
+comments = [];
 function onAddClick() {
     let li = document.createElement('li');
     let changeBtn = document.createElement('button'); 
@@ -100,7 +86,7 @@ function onAddClick() {
 
 
     if (income.checked) {
-         li.className += "income"
+         li.id = "income";
          text.className += "income-amount";
                 
          incomeEl.insertBefore(li, incomeEl.children[1]);    
@@ -125,9 +111,8 @@ function onAddClick() {
     li.appendChild(textfield);
 
     deleteBtn.addEventListener('click', deleteItem);
-    changeBtn.addEventListener('click', changeItem);
-
-
+    //changeBtn.addEventListener('click', changeItem);
+	
      consumption.checked = false;
      income.checked = false;
 
@@ -136,9 +121,8 @@ function onAddClick() {
      }
      comments.push(comment1);
 
-     money.value = ''
+     money.value = '';
 }
-
 //////////////////////////////////////////////////////////////////////
  let sum;
  function addAllIncome() {
@@ -198,9 +182,20 @@ function onAddClick() {
          newText.textContent = newBalance;
      }
  }
+////////////////delete Item from two Array and li////////////////////////
+var arrayElem = [];
+ function deleteItem(e) {
+	let h = e.target;
+	
+	let arrElems =  document.querySelectorAll('.delete');
+	let g;
+	for (var i = 0; i < arrElems.length; i++){
+		arrayElem.push(arrElems[i]);
+		g = arrayElem.indexOf(e.target);
+	}
+	arrayElem.splice(g, 1);
+	comments.splice(g, 1);
 
-/////////////////////delete Item///////////
- function deleteItem() {
     const listItem = this.parentNode;
     let list = listItem.parentNode;
     list.removeChild(listItem);
@@ -235,3 +230,6 @@ function onAddClick() {
 // });
 // }
 // changeArray();
+
+
+
