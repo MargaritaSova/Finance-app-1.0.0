@@ -323,3 +323,4 @@ function allConsumptionAmount() {
 	})
 	return amount;
 }
+
