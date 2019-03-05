@@ -58,8 +58,12 @@ function onConsumptionClick() {
     }
 }
 ////////////////////////////////////////////////////////////////////
+
 commentsIncome = [];
 commentsConsumption = [];
+
+comments = [];
+
 function onAddClick() {
     let li = document.createElement('li');
     let changeBtn = document.createElement('button'); 
@@ -80,6 +84,7 @@ function onAddClick() {
 
 
     if (income.checked) {
+
          li.id = 'income';
          amount.className += 'income-amount';
 		 deleteBtn.className = 'delete-income';
@@ -94,6 +99,12 @@ function onAddClick() {
 
 		 deleteBtn.addEventListener('click', deleteItemFromIncome);
 		 changeBtn.addEventListener('click', changeItemIncome);
+
+         li.id = "income";
+         text.className += "income-amount";
+                
+         incomeEl.insertBefore(li, incomeEl.children[1]);    
+
 
          addAllIncome();
      } else if (consumption.checked) {
@@ -124,11 +135,27 @@ function onAddClick() {
     li.appendChild(comment);
     li.appendChild(date);
     li.appendChild(textfield);
+
+
+    deleteBtn.addEventListener('click', deleteItem);
+    //changeBtn.addEventListener('click', changeItem);
+
 	
      consumption.checked = false;
      income.checked = false;
 
-     number1Input.value = '';
+
+  number1Input.value = '';
+
+  
+     let comment1 = {
+         numb: number1Input.value,
+     }
+     comments.push(comment1);
+
+     money.value = '';
+
+  
 }
 //////////////////////////////////////////////////////////////////////
  function addAllIncome() {
@@ -192,6 +219,7 @@ function onAddClick() {
  }
 ////////////////delete Item from two Array and li////////////////////////
 var arrayElem = [];
+
  function deleteItemFromIncome(e) {
 	let h = e.target;
 	
@@ -203,6 +231,19 @@ var arrayElem = [];
 	}
 	arrayElem.splice(g, 1);
 	commentsIncome.splice(g, 1);
+
+ function deleteItem(e) {
+	let h = e.target;
+	
+	let arrElems =  document.querySelectorAll('.delete');
+	let g;
+	for (var i = 0; i < arrElems.length; i++){
+		arrayElem.push(arrElems[i]);
+		g = arrayElem.indexOf(e.target);
+	}
+	arrayElem.splice(g, 1);
+	comments.splice(g, 1);
+
 
     const listItem = this.parentNode;
     let list = listItem.parentNode;
@@ -291,6 +332,7 @@ let arrayElem3 = [];
 	 newAmountInAllConsumption();
  }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 
 function newAmountInAllIncome() {
@@ -323,4 +365,20 @@ function allConsumptionAmount() {
 	})
 	return amount;
 }
+
+//  function changeArray(editInput){
+//     const j = editInput.value;
+//     const l = listItem.querySelector('.textfield');
+//     let h = l.value;
+//     // this.textfield = 
+//     comments.forEach(function (comment) {
+//       if (comment.numb == '1') {
+//         comment.numb = 666;
+//       }    
+// });
+// }
+// changeArray();
+
+
+
 
