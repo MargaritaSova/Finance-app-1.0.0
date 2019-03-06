@@ -17,8 +17,6 @@ income.addEventListener('change', onIncomeClick);
 consumption.addEventListener('change', onConsumptionClick);
 add.addEventListener('click', onAddClick);
 
-
-
 //function allows you to enter only numbers
 number1Input.onkeypress = function (e) {
     e = e || event;
@@ -61,6 +59,11 @@ function onConsumptionClick() {
 comments = [];
 let counter = 0;
 
+commentsIncome = [];
+commentsConsumption = [];
+
+comments = [];
+
 function onAddClick() {
     let li = document.createElement('li');
     let changeBtn = document.createElement('button'); 
@@ -93,6 +96,35 @@ function onAddClick() {
 		 }
 		 comments.push(comment1);
 
+         li.id = 'income';
+         amount.className += 'income-amount';
+		 deleteBtn.className = 'delete-income';
+		 changeBtn.className += 'change-income';
+
+         incomeEl.insertBefore(li, incomeEl.children[0]);  
+		 
+		 let comment1 = {
+			numb: number1Input.value,
+		 }
+		 commentsIncome.push(comment1);
+
+		 deleteBtn.addEventListener('click', deleteItemFromIncome);
+		 changeBtn.addEventListener('click', changeItemIncome);
+
+         li.id = "income";
+         text.className += "income-amount";
+                
+         incomeEl.insertBefore(li, incomeEl.children[1]);    
+
+
+         addAllIncome();
+     } else if (consumption.checked) {
+         li.className += 'consumption';
+         amount.className += 'consumption-amount';
+
+		 deleteBtn.className += 'delete-consumption';
+		 changeBtn.className += 'change-consumption';
+
 		 li.className += 'income';
 
 		 addAllIncome();
@@ -124,6 +156,11 @@ function onAddClick() {
     li.appendChild(comment);
     li.appendChild(date);
     li.appendChild(textfield);
+
+
+    deleteBtn.addEventListener('click', deleteItem);
+    //changeBtn.addEventListener('click', changeItem);
+
 	
      consumption.checked = false;
      income.checked = false;
@@ -134,6 +171,16 @@ function onAddClick() {
 	 changeBtn.addEventListener('click', OnChangeBtnClick);
 
 	 counter += 1;
+
+  number1Input.value = '';
+
+  
+     let comment1 = {
+         numb: number1Input.value,
+     }
+     comments.push(comment1);
+
+     money.value = '';
 }
 //////////////////////////////////////////////////////////////////////
  function addAllIncome() {
@@ -202,6 +249,9 @@ function onAddClick() {
  }
 ////////////////delete Item from two Array and li////////////////////////
  function ondeleteBtnClick(e) {
+var arrayElem = [];
+
+ function deleteItemFromIncome(e) {
 	let h = e.target;
 	let id = h.id;
 
@@ -211,6 +261,19 @@ function onAddClick() {
 			comments.splice(index, 1);
 		}
 	}
+
+ function deleteItem(e) {
+	let h = e.target;
+	
+	let arrElems =  document.querySelectorAll('.delete');
+	let g;
+	for (var i = 0; i < arrElems.length; i++){
+		arrayElem.push(arrElems[i]);
+		g = arrayElem.indexOf(e.target);
+	}
+	arrayElem.splice(g, 1);
+	comments.splice(g, 1);
+
 
     const listItem = this.parentNode;
     let list = listItem.parentNode;
@@ -287,4 +350,23 @@ function allAmount(l) {
 		}
 	}	
 	return amount;
+
 }
+
+//  function changeArray(editInput){
+//     const j = editInput.value;
+//     const l = listItem.querySelector('.textfield');
+//     let h = l.value;
+//     // this.textfield = 
+//     comments.forEach(function (comment) {
+//       if (comment.numb == '1') {
+//         comment.numb = 666;
+//       }    
+// });
+// }
+// changeArray();
+
+
+
+
+
