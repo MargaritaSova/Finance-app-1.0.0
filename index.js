@@ -58,8 +58,9 @@ function onConsumptionClick() {
     }
 }
 ////////////////////////////////////////////////////////////////////
-commentsIncome = [];
-commentsConsumption = [];
+comments = [];
+let counter = 0;
+
 function onAddClick() {
     let li = document.createElement('li');
     let changeBtn = document.createElement('button'); 
@@ -69,8 +70,13 @@ function onAddClick() {
     let comment = document.createElement('p');
     let date = document.createElement('p');
 
+	amount.className += 'amount';
     comment.className += 'description';
     textfield.className +='textfield';  
+	deleteBtn.className = 'delete';
+	deleteBtn.id = counter;
+	changeBtn.id = counter;
+	changeBtn.className += 'change';
 
     changeBtn.innerHTML = 'Изменить';
     deleteBtn.innerHTML = 'Удалить';
@@ -80,44 +86,38 @@ function onAddClick() {
 
 
     if (income.checked) {
-         li.id = 'income';
-         amount.className += 'income-amount';
-		 deleteBtn.className = 'delete-income';
-		 changeBtn.className += 'change-income';
-
-         incomeEl.insertBefore(li, incomeEl.children[0]);  
-		 
-		 let comment1 = {
-			numb: number1Input.value,
+		let comment1 = {
+			id:  counter,
+			type: 'income',
+			numb: number1Input.value
 		 }
-		 commentsIncome.push(comment1);
+		 comments.push(comment1);
 
-		 deleteBtn.addEventListener('click', deleteItemFromIncome);
-		 changeBtn.addEventListener('click', changeItemIncome);
+		 li.className += 'income';
 
-         addAllIncome();
-     } else if (consumption.checked) {
-         li.className += 'consumption';
-         amount.className += 'consumption-amount';
+		 addAllIncome();
+	} else if (consumption.checked) {
+		let comment1 = {
+			id:  counter,
+			type: 'consumption',
+			numb: number1Input.value
+		 }
+		 comments.push(comment1);
 
-		 deleteBtn.className += 'delete-consumption';
-		 changeBtn.className += 'change-consumption';
+		 li.className += 'consumption';
 
-         consumptionEl.insertBefore(li, consumptionEl.children[0]);
+		 addAllConsumption();
+		 } else {
+				alert('you need chose')
+			}
 
-		 let comment1 = {
-			 numb: number1Input.value,
-		}
-		commentsConsumption.push(comment1);
-
-		deleteBtn.addEventListener('click', deleteItemFromConsumption);
-		changeBtn.addEventListener('click', changeItemConsumption);
-
-         addAllConsumption();
-     } else {
-         alert('you need chose')
-     }
-
+		 let g = comments[comments.length - 1].type;
+		 if(g == 'income'){
+				incomeEl.insertBefore(li, incomeEl.children[0]); 
+		 }else if(g == 'consumption'){
+				consumptionEl.insertBefore(li, consumptionEl.children[0]);
+		 }
+			
     li.appendChild(changeBtn);
     li.appendChild(deleteBtn);
     li.appendChild(amount);
@@ -129,35 +129,38 @@ function onAddClick() {
      income.checked = false;
 
      number1Input.value = '';
+
+	 deleteBtn.addEventListener('click', ondeleteBtnClick);
+	 changeBtn.addEventListener('click', OnChangeBtnClick);
+
+	 counter += 1;
 }
 //////////////////////////////////////////////////////////////////////
  function addAllIncome() {
-	 let sum = 0;
      if (allIncome.children.length < 2) {
          let text1 = document.createElement('p');
-         text1.className += 'income';
-         text1.innerHTML = commentsIncome[commentsIncome.length - 1].numb;
+         text1.className += 'income-p';
+         text1.innerHTML = comments[comments.length - 1].numb;
          allIncome.insertBefore(text1, allIncome.children[1]);
 
      } else {
-         let newText = document.querySelector('.income'); 
-		 let result = allIncomeAmount();
+         let newText = document.querySelector('.income-p'); 
+		 let result = allAmount('income');
 		 newText.textContent = result;
      }
      AddCountedBalance();
  }
 
  function addAllConsumption() {
-	 sum = 0;
      if (allConsumption.children.length < 2) {
          let text2 = document.createElement('p');
-         text2.className += 'consumption';
-         text2.innerHTML = commentsConsumption[commentsConsumption.length - 1].numb;
+         text2.className += 'consumption-p';
+         text2.innerHTML = comments[comments.length - 1].numb;
          allConsumption.insertBefore(text2, allConsumption.children[1]);
 
      } else {
-         let newText = document.querySelector('.consumption');
-		 let result = allConsumptionAmount();
+         let newText = document.querySelector('.consumption-p');
+		 let result = allAmount('consumption');
          newText.textContent = result;
     }
      AddCountedBalance();
@@ -166,8 +169,15 @@ function onAddClick() {
 
  function AddCountedBalance() {
      let newBalance;
-	 let result1 = allIncomeAmount();
-	 let result2 = allConsumptionAmount();
+	 let result1 = allAmount('income');
+	 if(result1 == null){
+		result1 = 0;
+	 }
+	 let result2 = allAmount('consumption');
+	 if(result2 == null){
+		result2 = 0;
+	 }
+
 	 
 	 let sum = result1;
 	 let sum2 = result2;
@@ -191,60 +201,36 @@ function onAddClick() {
      }
  }
 ////////////////delete Item from two Array and li////////////////////////
-var arrayElem = [];
- function deleteItemFromIncome(e) {
+ function ondeleteBtnClick(e) {
 	let h = e.target;
-	
-	let arrElems =  document.querySelectorAll('.delete-income');
-	let g;
-	for (var i = 0; i < arrElems.length; i++){
-		arrayElem.unshift(arrElems[i]);
-		g = arrayElem.indexOf(e.target);
+	let id = h.id;
+
+	for (var i = 0; i < comments.length; i++){
+		if(id == comments[i].id){
+			let index = comments.indexOf(comments[i])
+			comments.splice(index, 1);
+		}
 	}
-	arrayElem.splice(g, 1);
-	commentsIncome.splice(g, 1);
 
     const listItem = this.parentNode;
     let list = listItem.parentNode;
     list.removeChild(listItem);
 
-	newAmountInAllIncome();
-	AddCountedBalance();
-}
+	if(listItem.className == 'income'){
+		newAmountInAllIncome();
 
-var arrayElem2 = [];
- function deleteItemFromConsumption(e) {
-	//let h = e.target;
-	
-	let arrElems =  document.querySelectorAll('.delete-consumption');
-	let g;
-	for (var i = 0; i < arrElems.length; i++){
-		arrayElem2.unshift(arrElems[i]);
-		g = arrayElem2.indexOf(e.target);
+	}else if(listItem.className == 'consumption'){
+		newAmountInAllConsumption();
 	}
-	arrayElem2.splice(g, 1);
-	commentsConsumption.splice(g, 1);
-
-    const listItem = this.parentNode;
-    let list = listItem.parentNode;
-    list.removeChild(listItem);
-
-	newAmountInAllConsumption();
 	AddCountedBalance();
 }
 ////////////////change Item/////////////////
-let arrayElem3 = [];
- function changeItemIncome(e) {
-	let arrElems = document.querySelectorAll('.change-income');
-
-	let g;
-	for(let i = 0; i < arrElems.length; i ++){
-		arrayElem3.unshift(arrElems[i]);
-		g = arrayElem3.indexOf(e.target);
-	}
-
+ function OnChangeBtnClick(e) {
+	let h = e.target;
+	let id = h.id;
+	
      const listItem = this.parentNode;
-     const title = listItem.querySelector('.income-amount');
+     const title = listItem.querySelector('.amount');
      const editInput = listItem.querySelector('.textfield');
      const isEditing = listItem.classList.contains('editing');
 
@@ -257,70 +243,48 @@ let arrayElem3 = [];
      }
      listItem.classList.toggle('editing');
 
-	 commentsIncome[g].numb = title.innerText;
-
-	 newAmountInAllIncome();
- }
-
- let arrayElem4 = [];
- function changeItemConsumption(e) {
-	let arrElems = document.querySelectorAll('.change-consumption');
-
-	let g;
-	for(let i = 0; i < arrElems.length; i ++){
-		arrayElem4.unshift(arrElems[i]);
-		g = arrayElem4.indexOf(e.target);
+	 for(let i = 0; i < comments.length; i++){
+		if(id == comments[i].id){
+			comments[i].numb = title.innerText;
+		}
 	}
-
-     const listItem = this.parentNode;
-     const title = listItem.querySelector('.consumption-amount');
-     const editInput = listItem.querySelector('.textfield');
-     const isEditing = listItem.classList.contains('editing');
-
-      if(isEditing) {
-          title.innerText = editInput.value;
-          this.innerText = 'Изменить';
-      } else {
-         editInput.value = title.innerText;
-         this.innerText = 'Сохранить';
-     }
-     listItem.classList.toggle('editing');
-
-	 commentsConsumption[g].numb = title.innerText;
-
-	 newAmountInAllConsumption();
+	if(listItem.className == 'income'){
+		newAmountInAllIncome();
+	}else if(listItem.className == 'consumption'){
+		newAmountInAllConsumption();
+	}
+	 AddCountedBalance();
  }
-
 /////////////////////////////////////////////////////////////////////////////////
 
 function newAmountInAllIncome() {
-	let p = document.querySelector('.income');
-	let result = allIncomeAmount();
+	let p = document.querySelector('.income-p');
+	let result = allAmount('income');
 	p.innerHTML = result;
-	AddCountedBalance();
 }
 
 function newAmountInAllConsumption() {
-	let p = document.querySelector('.consumption');
-	let result = allConsumptionAmount();
+	let p = document.querySelector('.consumption-p');
+	let result = allAmount('consumption');
 	p.innerHTML = result;
-	AddCountedBalance();
 }
 
-
-function allIncomeAmount() {
+function allAmount(l) {
+	let value = l;
 	let amount = 0;
-	commentsIncome.forEach(function (comment) {
-		amount += Number(comment.numb);
-	})
+	if(value == 'income') {
+		
+		for(let i = 0; i < comments.length; i++){
+			if(comments[i].type == 'income'){
+				amount += Number(comments[i].numb);
+			}
+		}
+	}else if(value == 'consumption') {
+		for(let i = 0; i < comments.length; i++){
+			if(comments[i].type == 'consumption'){
+				amount += Number(comments[i].numb);
+			}
+		}
+	}	
 	return amount;
 }
-
-function allConsumptionAmount() {
-	let amount = 0;
-	commentsConsumption.forEach(function (comment) {
-		amount += Number(comment.numb);
-	})
-	return amount;
-}
-
